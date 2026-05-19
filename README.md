@@ -1,5 +1,6 @@
 # 📊 SmartSlide AI
 
+
 SmartSlide AI is a professional, AI-powered presentation generator that transforms user-defined topics into beautifully structured, informative, and fully editable PowerPoint (`.pptx`) presentations in seconds. Leveraging the power of Google's Gemini API and the versatility of Python's `python-pptx` library, it builds content-rich slides featuring hooks, concepts, detailed explanations, real-world examples, and visual impacts.
 
 ---
@@ -56,6 +57,7 @@ SmartSlideAI/
 ```
 
 ---
+
 
 ## 🚀 Getting Started
 
