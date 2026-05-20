@@ -1,7 +1,8 @@
 # 📊 SmartSlide AI
 
+SmartSlide AI is a professional, AI-powered presentation generator that transforms user-defined topics into beautifully structured, informative, and fully editable PowerPoint (`.pptx`) presentations in seconds. Leveraging the power of Google's Gemini API and the versatility of Python's `python-pptx` library, it builds content-rich slides featuring dynamic layouts, professional color themes, informative paragraphs, bullet-point details, visual concepts, statistics, and structured timelines.
 
-SmartSlide AI is a professional, AI-powered presentation generator that transforms user-defined topics into beautifully structured, informative, and fully editable PowerPoint (`.pptx`) presentations in seconds. Leveraging the power of Google's Gemini API and the versatility of Python's `python-pptx` library, it builds content-rich slides featuring hooks, concepts, detailed explanations, real-world examples, and visual impacts.
+![SmartSlide AI Homepage Screenshot](homepage_screenshot.png)
 
 ---
 
@@ -10,12 +11,12 @@ SmartSlide AI is a professional, AI-powered presentation generator that transfor
 - **Instant AI Content Generation**: Analyzes any topic and automatically structures your slides with original, high-quality content.
 - **Custom Slide Counts**: Support for generating presentations of different lengths (5, 7, 10, or 15 slides).
 - **Professional Themes**: Offers distinct presentation themes, such as **Corporate**, **Modern**, and **Startup**, dynamically styling fonts, titles, and text colors.
-- **Rich Slide Structure**: Generates detailed content for each slide:
-  - **Hook**: An engaging opening statement or interesting fact.
-  - **Concept**: The core idea or focus of the slide.
-  - **Explanation**: A deep dive into the subject matter.
-  - **Example**: Real-world application or study.
-  - **Impact**: The key takeaway or significance.
+- **Dynamic Layouts & Rich Content**: Supports multiple custom slide layouts to match different presentation needs:
+  - **Standard**: Conceptual overview with paragraphs, detailed bullets, a visual mockup description, and key statistics.
+  - **Two-Column**: Side-by-side columnar comparison (e.g. current vs. proposed).
+  - **Stat Highlight**: Prominent display of a key metric/statistic callout accompanied by supporting explanation.
+  - **Process**: 3-step horizontal workflow timeline or project phases.
+  - **Summary**: Key takeaways and an actionable "Next Steps" call-to-action (CTA).
 - **Premium Dark-Mode UI**: A modern, glassmorphic, and fully responsive web interface built with pure HTML/CSS/JS.
 - **Fully Editable Outputs**: Download your presentation as standard Microsoft PowerPoint (`.pptx`) files, compatible with MS PowerPoint, Google Slides, and Keynote.
 
@@ -25,7 +26,7 @@ SmartSlide AI is a professional, AI-powered presentation generator that transfor
 
 - **Frontend**: HTML5, CSS3 (Vanilla Custom Styles), JavaScript (ES6 Fetch API)
 - **Backend Framework**: Flask (Python) with CORS support
-- **AI Integration**: Google Generative AI (`gemini-1.5-flash`)
+- **AI Integration**: Google Generative AI (`gemini-2.5-flash`)
 - **Presentation Engine**: `python-pptx`
 - **Configuration & Setup**: `python-dotenv`, custom `setup.py` validation runner
 
