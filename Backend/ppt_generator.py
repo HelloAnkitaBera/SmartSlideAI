@@ -1,9 +1,38 @@
 import os
 import re
 import json
+import urllib.request
+import urllib.parse
+import tempfile
 import google.generativeai as genai
 
 from dotenv import load_dotenv
+
+
+# =====================================
+# IMAGE UTILS
+# =====================================
+
+def _download_topic_image(topic, width=480, height=1080):
+    try:
+        # Clean topic to get alphanumeric and commas keywords
+        cleaned_words = [w.strip() for w in topic.split() if w.strip()]
+        keywords = ",".join(cleaned_words)
+        if not keywords:
+            keywords = "business"
+        
+        url = f"https://loremflickr.com/{width}/{height}/{urllib.parse.quote(keywords)}"
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=8) as response:
+            if response.status == 200:
+                temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
+                temp_file.write(response.read())
+                temp_file.close()
+                return temp_file.name
+    except Exception as e:
+        print(f"Error downloading image: {e}")
+    return None
+
 
 from pptx import Presentation
 from pptx.util import Pt
@@ -322,21 +351,37 @@ class PPTGenerator:
         slide = self.prs.slides.add_slide(self.prs.slide_layouts[6])
         self.set_background(slide)
 
-        # Elegant vertical block accent on the right
-        self.add_card(
-            slide,
-            Pt(480), Pt(0), Pt(240), Pt(540),
-            bg_color=self.theme["primary"]
-        )
+        # Try to download and add topic-relevant cover image
+        image_path = _download_topic_image(topic, width=480, height=1080)
+        image_added = False
+        if image_path:
+            try:
+                slide.shapes.add_picture(image_path, Pt(480), Pt(0), Pt(240), Pt(540))
+                image_added = True
+            except Exception as e:
+                print(f"Failed to add title slide picture: {e}")
+            finally:
+                try:
+                    os.remove(image_path)
+                except:
+                    pass
 
-        # Decorative secondary accent badge
-        circle = slide.shapes.add_shape(
-            MSO_AUTO_SHAPE_TYPE.OVAL,
-            Pt(550), Pt(210), Pt(100), Pt(100)
-        )
-        circle.fill.solid()
-        circle.fill.fore_color.rgb = self.theme["secondary"]
-        circle.line.color.rgb = self.theme["secondary"]
+        # Fallback to elegant vertical block accent and badge if image download failed
+        if not image_added:
+            self.add_card(
+                slide,
+                Pt(480), Pt(0), Pt(240), Pt(540),
+                bg_color=self.theme["primary"]
+            )
+
+            # Decorative secondary accent badge
+            circle = slide.shapes.add_shape(
+                MSO_AUTO_SHAPE_TYPE.OVAL,
+                Pt(550), Pt(210), Pt(100), Pt(100)
+            )
+            circle.fill.solid()
+            circle.fill.fore_color.rgb = self.theme["secondary"]
+            circle.line.color.rgb = self.theme["secondary"]
 
         # Small badge label
         tf_badge = self.add_textbox(slide, Pt(60), Pt(120), Pt(400), Pt(40))
@@ -682,21 +727,37 @@ class PPTGenerator:
         slide = self.prs.slides.add_slide(self.prs.slide_layouts[6])
         self.set_background(slide)
 
-        # Symmetrical visual block on the left (matches title slide accent)
-        self.add_card(
-            slide,
-            Pt(0), Pt(0), Pt(240), Pt(540),
-            bg_color=self.theme["primary"]
-        )
+        # Try to download and add topic-relevant conclusion image
+        image_path = _download_topic_image(topic, width=480, height=1080)
+        image_added = False
+        if image_path:
+            try:
+                slide.shapes.add_picture(image_path, Pt(0), Pt(0), Pt(240), Pt(540))
+                image_added = True
+            except Exception as e:
+                print(f"Failed to add thank you slide picture: {e}")
+            finally:
+                try:
+                    os.remove(image_path)
+                except:
+                    pass
 
-        # Decorative secondary accent badge
-        circle = slide.shapes.add_shape(
-            MSO_AUTO_SHAPE_TYPE.OVAL,
-            Pt(70), Pt(210), Pt(100), Pt(100)
-        )
-        circle.fill.solid()
-        circle.fill.fore_color.rgb = self.theme["secondary"]
-        circle.line.color.rgb = self.theme["secondary"]
+        # Fallback to symmetrical visual block and badge if image download failed
+        if not image_added:
+            self.add_card(
+                slide,
+                Pt(0), Pt(0), Pt(240), Pt(540),
+                bg_color=self.theme["primary"]
+            )
+
+            # Decorative secondary accent badge
+            circle = slide.shapes.add_shape(
+                MSO_AUTO_SHAPE_TYPE.OVAL,
+                Pt(70), Pt(210), Pt(100), Pt(100)
+            )
+            circle.fill.solid()
+            circle.fill.fore_color.rgb = self.theme["secondary"]
+            circle.line.color.rgb = self.theme["secondary"]
 
         # Small badge label
         tf_badge = self.add_textbox(slide, Pt(280), Pt(160), Pt(400), Pt(40))
