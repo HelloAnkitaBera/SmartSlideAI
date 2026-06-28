@@ -385,12 +385,12 @@ class PPTGenerator:
         slide = self.prs.slides.add_slide(self.prs.slide_layouts[6])
         self.set_background(slide)
 
-        # Try to download and add topic-relevant cover image
-        image_path = _download_topic_image(topic, width=480, height=1080)
+        # Try to download and add topic-relevant cover image (aspect ratio matched to 320:540 -> 640:1080)
+        image_path = _download_topic_image(topic, width=640, height=1080)
         image_added = False
         if image_path:
             try:
-                slide.shapes.add_picture(image_path, Pt(480), Pt(0), Pt(240), Pt(540))
+                slide.shapes.add_picture(image_path, Pt(400), Pt(0), Pt(320), Pt(540))
                 image_added = True
             except Exception as e:
                 print(f"Failed to add title slide picture: {e}")
@@ -404,21 +404,21 @@ class PPTGenerator:
         if not image_added:
             self.add_card(
                 slide,
-                Pt(480), Pt(0), Pt(240), Pt(540),
+                Pt(400), Pt(0), Pt(320), Pt(540),
                 bg_color=self.theme["primary"]
             )
 
             # Decorative secondary accent badge
             circle = slide.shapes.add_shape(
                 MSO_AUTO_SHAPE_TYPE.OVAL,
-                Pt(550), Pt(210), Pt(100), Pt(100)
+                Pt(510), Pt(210), Pt(100), Pt(100)
             )
             circle.fill.solid()
             circle.fill.fore_color.rgb = self.theme["secondary"]
             circle.line.color.rgb = self.theme["secondary"]
 
         # Small badge label
-        tf_badge = self.add_textbox(slide, Pt(60), Pt(120), Pt(400), Pt(40))
+        tf_badge = self.add_textbox(slide, Pt(60), Pt(120), Pt(320), Pt(40))
         p_badge = tf_badge.paragraphs[0]
         p_badge.text = "PRESENTATION TOPIC"
         p_badge.font.name = FONT_NAME
@@ -427,7 +427,7 @@ class PPTGenerator:
         p_badge.font.color.rgb = self.theme["primary"]
 
         # Title
-        tf_title = self.add_textbox(slide, Pt(55), Pt(150), Pt(400), Pt(180))
+        tf_title = self.add_textbox(slide, Pt(55), Pt(150), Pt(325), Pt(180))
         p_title = tf_title.paragraphs[0]
         p_title.text = clean_text(topic)
         p_title.font.name = FONT_NAME
@@ -445,7 +445,7 @@ class PPTGenerator:
         line.line.color.rgb = self.theme["secondary"]
 
         # Subtitle
-        tf_sub = self.add_textbox(slide, Pt(55), Pt(360), Pt(400), Pt(80))
+        tf_sub = self.add_textbox(slide, Pt(55), Pt(360), Pt(325), Pt(80))
         p_sub = tf_sub.paragraphs[0]
         p_sub.text = "AI Generated Professional Presentation"
         p_sub.font.name = FONT_NAME
@@ -761,12 +761,12 @@ class PPTGenerator:
         slide = self.prs.slides.add_slide(self.prs.slide_layouts[6])
         self.set_background(slide)
 
-        # Try to download and add topic-relevant conclusion image
-        image_path = _download_topic_image(topic, width=480, height=1080)
+        # Try to download and add topic-relevant conclusion image (aspect ratio matched to 320:540 -> 640:1080)
+        image_path = _download_topic_image(topic, width=640, height=1080)
         image_added = False
         if image_path:
             try:
-                slide.shapes.add_picture(image_path, Pt(0), Pt(0), Pt(240), Pt(540))
+                slide.shapes.add_picture(image_path, Pt(0), Pt(0), Pt(320), Pt(540))
                 image_added = True
             except Exception as e:
                 print(f"Failed to add thank you slide picture: {e}")
@@ -780,21 +780,21 @@ class PPTGenerator:
         if not image_added:
             self.add_card(
                 slide,
-                Pt(0), Pt(0), Pt(240), Pt(540),
+                Pt(0), Pt(0), Pt(320), Pt(540),
                 bg_color=self.theme["primary"]
             )
 
             # Decorative secondary accent badge
             circle = slide.shapes.add_shape(
                 MSO_AUTO_SHAPE_TYPE.OVAL,
-                Pt(70), Pt(210), Pt(100), Pt(100)
+                Pt(110), Pt(210), Pt(100), Pt(100)
             )
             circle.fill.solid()
             circle.fill.fore_color.rgb = self.theme["secondary"]
             circle.line.color.rgb = self.theme["secondary"]
 
         # Small badge label
-        tf_badge = self.add_textbox(slide, Pt(280), Pt(160), Pt(400), Pt(40))
+        tf_badge = self.add_textbox(slide, Pt(360), Pt(160), Pt(320), Pt(40))
         p_badge = tf_badge.paragraphs[0]
         p_badge.text = "CONCLUSION"
         p_badge.font.name = FONT_NAME
@@ -803,7 +803,7 @@ class PPTGenerator:
         p_badge.font.color.rgb = self.theme["primary"]
 
         # Main Thank You title
-        tf_title = self.add_textbox(slide, Pt(275), Pt(190), Pt(400), Pt(120))
+        tf_title = self.add_textbox(slide, Pt(355), Pt(190), Pt(320), Pt(120))
         p_title = tf_title.paragraphs[0]
         p_title.text = "Thank You"
         p_title.font.name = FONT_NAME
@@ -814,14 +814,14 @@ class PPTGenerator:
         # Accent Line
         line = slide.shapes.add_shape(
             MSO_AUTO_SHAPE_TYPE.RECTANGLE,
-            Pt(280), Pt(320), Pt(150), Pt(4)
+            Pt(360), Pt(320), Pt(150), Pt(4)
         )
         line.fill.solid()
         line.fill.fore_color.rgb = self.theme["secondary"]
         line.line.color.rgb = self.theme["secondary"]
 
         # Subtitle / Closing statement
-        tf_sub = self.add_textbox(slide, Pt(275), Pt(340), Pt(400), Pt(100))
+        tf_sub = self.add_textbox(slide, Pt(355), Pt(340), Pt(320), Pt(100))
         p_sub = tf_sub.paragraphs[0]
         p_sub.text = f"We hope this overview of {clean_text(topic)} was insightful. Let's connect for any questions or next steps."
         p_sub.font.name = FONT_NAME
