@@ -25,7 +25,8 @@ async function generatePPT() {
     statusEl.style.color = "#0066cc";
 
     try {
-        const backendUrl = window.location.protocol === 'file:' || window.location.port !== '5000' ? 'http://127.0.0.1:5000' : '';
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+        const backendUrl = isLocal ? (window.location.port === '5000' ? '' : 'http://127.0.0.1:5000') : '';
         const response = await fetch(`${backendUrl}/generate`, {
             method: "POST",
             headers: {
@@ -59,7 +60,8 @@ async function generatePPT() {
         // Trigger download using the URL provided by the backend
         let downloadUrl = data.download_url;
         if (downloadUrl.startsWith('/')) {
-            const backendUrl = window.location.protocol === 'file:' || window.location.port !== '5000' ? 'http://127.0.0.1:5000' : '';
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+            const backendUrl = isLocal ? (window.location.port === '5000' ? '' : 'http://127.0.0.1:5000') : '';
             downloadUrl = backendUrl + downloadUrl;
         }
         window.location.href = downloadUrl;
