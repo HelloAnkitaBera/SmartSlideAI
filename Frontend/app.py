@@ -22,9 +22,8 @@ import time
 def _import_create_ppt():
 
     candidates = [
-
+        "Backend.ppt_generator",
         "backend.ppt_generator",
-
         "ppt_generator",
     ]
 
@@ -59,42 +58,39 @@ def _import_create_ppt():
 
     for parent in parents:
 
-        candidate = os.path.join(
+        for folder_name in ["Backend", "backend"]:
 
-            parent,
+            candidate = os.path.join(
+                parent,
+                folder_name,
+                "ppt_generator.py"
+            )
 
-            "backend",
+            if os.path.isfile(candidate):
 
-            "ppt_generator.py"
-        )
+                try:
 
-        if os.path.isfile(candidate):
+                    spec = importlib.util.spec_from_file_location(
+                        "ppt_generator_local",
+                        candidate
+                    )
 
-            try:
+                    if spec is None or spec.loader is None:
+                        continue
 
-                spec = importlib.util.spec_from_file_location(
+                    mod = importlib.util.module_from_spec(spec)
 
-                    "ppt_generator_local",
+                    sys.modules[spec.name] = mod
 
-                    candidate
-                )
+                    spec.loader.exec_module(mod)
 
-                if spec is None or spec.loader is None:
+                    return getattr(mod, "create_ppt")
+
+                except Exception as e:
+
+                    print(f"Dynamic import error: {e}")
+
                     continue
-
-                mod = importlib.util.module_from_spec(spec)
-
-                sys.modules[spec.name] = mod
-
-                spec.loader.exec_module(mod)
-
-                return getattr(mod, "create_ppt")
-
-            except Exception as e:
-
-                print(f"Dynamic import error: {e}")
-
-                continue
 
     raise ImportError(
         "Could not import create_ppt"
