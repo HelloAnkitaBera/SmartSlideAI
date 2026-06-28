@@ -95,14 +95,11 @@ def _import_create_ppt():
     raise ImportError(
         "Could not import create_ppt"
     )
-
-
 # =========================
 # LOAD FUNCTION
 # =========================
 
 create_ppt = _import_create_ppt()
-
 
 # =========================
 # FLASK APP
@@ -117,7 +114,6 @@ app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 
 CORS(app)
 
-
 # =========================
 # HOME PAGE
 # =========================
@@ -128,8 +124,6 @@ def home():
     return render_template(
         "index.html"
     )
-
-
 # =========================
 # GENERATE PPT
 # =========================

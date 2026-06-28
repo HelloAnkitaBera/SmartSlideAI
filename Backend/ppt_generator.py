@@ -72,6 +72,7 @@ from pptx import Presentation
 from pptx.util import Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_AUTO_SHAPE_TYPE
+from pptx.enum.text import PP_PARAGRAPH_ALIGNMENT
 
 
 # =====================================
@@ -88,14 +89,19 @@ FONT_NAME = "Arial"
 load_dotenv(override=True)
 
 api_key = os.getenv("GEMINI_API_KEY")
+MODEL = "gemini-2.5-flash"
 
 if not api_key:
     raise ValueError("GEMINI_API_KEY missing in .env")
 
-genai.configure(api_key=api_key)
+if hasattr(genai, "configure"):
+    genai.configure(api_key=api_key)
+else:
+    raise AttributeError(
+        "google.generativeai.configure() is not available in the installed package."
+    )
 
-# Using gemini-2.5-flash which is the active stable model
-model = genai.GenerativeModel("gemini-2.5-flash")
+model = MODEL
 
 
 # =====================================
@@ -268,9 +274,13 @@ Rules:
 """
 
     try:
+        # Use the current Generative AI text generation API
+        model = genai.GenerativeModel(MODEL)
         response = model.generate_content(
             prompt,
-            generation_config={"response_mime_type": "application/json"}
+            generation_config=genai.types.GenerationConfig(
+                response_mime_type="application/json"
+            )
         )
 
         text = response.text.strip()
@@ -493,7 +503,7 @@ class PPTGenerator:
         p_vis.font.size = Pt(13)
         p_vis.font.bold = True
         p_vis.font.color.rgb = RGBColor(255, 255, 255)
-        p_vis.alignment = 1
+        p_vis.alignment = PP_PARAGRAPH_ALIGNMENT.CENTER
 
         # Stat Callout
         if data.get("stat"):
@@ -504,14 +514,14 @@ class PPTGenerator:
             p_stat.font.size = Pt(28)
             p_stat.font.bold = True
             p_stat.font.color.rgb = self.theme["secondary"]
-            p_stat.alignment = 1
+            p_stat.alignment = PP_PARAGRAPH_ALIGNMENT.CENTER
             
             p_label = tf_stat.add_paragraph()
             p_label.text = clean_text(data.get("stat_label", "Key Metric"))
             p_label.font.name = FONT_NAME
             p_label.font.size = Pt(11)
             p_label.font.color.rgb = self.theme["subtext"]
-            p_label.alignment = 1
+            p_label.alignment = PP_PARAGRAPH_ALIGNMENT.CENTER
 
         self.add_slide_quote(slide, data.get("quote", ""))
 
@@ -595,7 +605,7 @@ class PPTGenerator:
         p_stat.font.size = Pt(56)
         p_stat.font.bold = True
         p_stat.font.color.rgb = RGBColor(255, 255, 255)
-        p_stat.alignment = 1
+        p_stat.alignment = PP_PARAGRAPH_ALIGNMENT.CENTER
         p_stat.space_after = Pt(12)
 
         # Stat Label
@@ -605,7 +615,7 @@ class PPTGenerator:
         p_label.font.size = Pt(14)
         p_label.font.bold = True
         p_label.font.color.rgb = self.theme["secondary"]
-        p_label.alignment = 1
+        p_label.alignment = PP_PARAGRAPH_ALIGNMENT.CENTER
 
         # Right Column Card (Supporting content)
         self.add_card(slide, Pt(340), Pt(90), Pt(340), Pt(320), bg_color=self.theme["card"])
@@ -742,7 +752,7 @@ class PPTGenerator:
         p_cta.font.size = Pt(18)
         p_cta.font.bold = True
         p_cta.font.color.rgb = RGBColor(255, 255, 255)
-        p_cta.alignment = 1
+        p_cta.alignment = PP_PARAGRAPH_ALIGNMENT.CENTER
         p_cta.space_after = Pt(15)
 
         p_cta_desc = tf_right.add_paragraph()
@@ -751,7 +761,7 @@ class PPTGenerator:
         p_cta_desc.font.size = Pt(12)
         p_cta_desc.font.italic = True
         p_cta_desc.font.color.rgb = RGBColor(255, 255, 255)
-        p_cta_desc.alignment = 1
+        p_cta_desc.alignment = PP_PARAGRAPH_ALIGNMENT.CENTER
 
     # =================================
     # LAYOUT 6: THANK YOU SLIDE
