@@ -22,7 +22,7 @@ FONT_NAME = "Arial"
 # LOAD ENV
 # =====================================
 
-load_dotenv()
+load_dotenv(override=True)
 
 api_key = os.getenv("GEMINI_API_KEY")
 
