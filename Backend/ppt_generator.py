@@ -15,13 +15,47 @@ from dotenv import load_dotenv
 
 def _download_topic_image(topic, width=480, height=1080):
     try:
-        # Clean topic to get alphanumeric and commas keywords
-        cleaned_words = [w.strip() for w in topic.split() if w.strip()]
-        keywords = ",".join(cleaned_words)
-        if not keywords:
-            keywords = "business"
+        topic_lower = topic.lower()
         
-        url = f"https://loremflickr.com/{width}/{height}/{urllib.parse.quote(keywords)}"
+        # Keywords categorization
+        tech_keywords = ["data", "science", "code", "programming", "software", "ai", "machine", "cyber", "technology", "network", "cloud", "digital", "developer", "analytics", "computer", "system"]
+        green_keywords = ["green", "sustain", "environment", "nature", "earth", "eco", "renewable", "solar", "wind", "climate", "clean", "energy"]
+        biz_keywords = ["business", "finance", "corporate", "startup", "marketing", "sales", "strategy", "office", "money", "growth", "investment", "lead", "management", "project"]
+
+        # Selection of curated high-quality vertical Unsplash photos
+        if any(k in topic_lower for k in tech_keywords):
+            urls = [
+                "https://images.unsplash.com/photo-1635070041078-e363dbe005cb", # Sci-fi neon grid
+                "https://images.unsplash.com/photo-1550751827-4bd374c3f58b", # Cybersecurity chip
+                "https://images.unsplash.com/photo-1451187580459-43490279c0fa", # Cyber network
+                "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5", # Coding matrix
+            ]
+        elif any(k in topic_lower for k in green_keywords):
+            urls = [
+                "https://images.unsplash.com/photo-1501854140801-50d01698950b", # Green forest top view
+                "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d", # Minimal forest path
+            ]
+        elif any(k in topic_lower for k in biz_keywords):
+            urls = [
+                "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab", # Corporate architecture
+                "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4", # 3D geometric shapes
+                "https://images.unsplash.com/photo-1507679799987-c73779587ccf", # Premium suit minimal
+            ]
+        else:
+            # Fallback abstract fluid art and tech lines
+            urls = [
+                "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe", # Abstract fluid wave
+                "https://images.unsplash.com/photo-1618005198143-d528f99e3381", # Sleek tech network
+                "https://images.unsplash.com/photo-1579546929518-9e396f3cc809", # Elegant gradient
+            ]
+
+        # Use a stable hash of the topic string to select one of the URLs consistently
+        idx = sum(ord(c) for c in topic) % len(urls)
+        base_url = urls[idx]
+        
+        # Append sizing & cropping parameters to the CDN URL
+        url = f"{base_url}?w={width}&h={height}&fit=crop"
+        
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=8) as response:
             if response.status == 200:
@@ -30,7 +64,7 @@ def _download_topic_image(topic, width=480, height=1080):
                 temp_file.close()
                 return temp_file.name
     except Exception as e:
-        print(f"Error downloading image: {e}")
+        print(f"Error downloading curated image: {e}")
     return None
 
 
